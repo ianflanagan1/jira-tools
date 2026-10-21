@@ -1,0 +1,14 @@
+{
+  "name": "jira-tools",
+  "description": "File a Jira issue for something raised in a Claude Code conversation that won't be fixed now, such as a code-review finding, linked to the branch and commit it was raised on.",
+  "owner": {
+    "name": "Ian Flanagan"
+  },
+  "plugins": [
+    {
+      "name": "jira-tools",
+      "source": "./",
+      "description": "File a Jira issue for something raised in a Claude Code conversation that won't be fixed now, such as a code-review finding, linked to the branch and commit it was raised on."
+    }
+  ]
+}

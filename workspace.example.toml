@@ -1,0 +1,39 @@
+# A repository's .workspace.toml: settings its team shares, committed at its root. Copy this file
+# there as .workspace.toml and edit it. Only credentials stay on each person's machine.
+
+# Where the repository's issues go, for jira-tools, and for product-map, which copies this table
+# into the app's product map so a colleague's report is filed in the same place. site and space are
+# needed; a setting left out takes the default shown here, and each command says so.
+[tracker]
+
+# The tracker. jira-tools handles only jira.
+kind = "jira"
+
+# Your Jira Cloud site.
+site = "your-site.atlassian.net"
+
+# The key of the space issues are filed in: the prefix of its issue keys, as in PROJ-123. Jira's
+# space settings show it; it can differ from the space's name.
+space = "PROJ"
+
+# The type issues are filed as. `jira create --type` overrides it.
+issue_type = "Task"
+
+# Labels every issue gets. `jira create --label` adds more. An issue isn't filed again while one
+# with the same summary and these labels is open.
+labels = []
+
+# The status in your workflow each stage of our process is kept in, by your workflow's names for
+# them. A stage left out is kept as a label instead, stage-<name>, in any to-do status no stage is
+# kept in. Map a stage only to a status that means just that stage. Done is any status in your
+# workflow's done category. The stages:
+#
+#   needs-codebase    a report no one has compared with the code yet
+#   needs-developer   a developer answers, decides or approves
+#   ready-for-agent   approved, with no open questions: an agent may work on it. Restrict who can
+#                     move an issue to its status in your workflow, so the status itself shows a
+#                     person approved it; a label can be added by anyone who can edit the issue.
+#   being-worked-on   work has started: where `jira start` moves an issue
+#   awaiting-review   the work is up for review
+[tracker.stages]
+being-worked-on = "In Progress"
