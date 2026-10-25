@@ -3,11 +3,11 @@
             [--due <YYYY-MM-DD>] [--component <name>]... [--fix-version <name>]...
             [--affects-version <name>]... [--link <relation> <other>]...
             [--field <name>=<value>]... [--field-file <name>=<path>]... [--estimate <duration>]
-            [--stage <stage>] [--workspace <file>] [--dry-run]
+            [--stage <stage>] [--tracker <file>] [--dry-run]
 
 Files a Jira issue with summary, in the space, of the type and with the labels set in the
-[tracker] table of the repository's .workspace.toml, or with --workspace, of another file: a
-.workspace.toml, or a product map, whose front matter has the table. Its description is the
+repository's .config/ianf-tracker.toml, or with --tracker, in another file: another
+ianf-tracker.toml, or a product map, whose front matter has them. Its description is the
 Markdown on stdin, if any, followed by where it was raised: the branch, commit and repository of
 the current folder. The options set its other fields: its
 type, priority, components and versions each matched ignoring case against those the space has;
@@ -29,6 +29,7 @@ instead, and keeps its stage. --dry-run shows what
 would be sent, without the API token or Jira.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -130,10 +131,14 @@ def register(subparsers: cli.Subparsers) -> None:
     )
     parser.add_argument("--stage", metavar="stage", help="the stage to file it at, as jira stage")
     parser.add_argument(
-        "--workspace",
+        "--tracker",
         metavar="file",
         type=Path,
-        help="the .workspace.toml or product map to take the settings from",
+        help="the ianf-tracker.toml or product map to take the settings from",
+    )
+    # Its name before the settings moved to .config/.
+    parser.add_argument(
+        "--workspace", dest="tracker", type=Path, help=argparse.SUPPRESS, deprecated=True
     )
     parser.add_argument("--dry-run", action="store_true", help="show what would be sent")
     parser.set_defaults(
@@ -155,7 +160,7 @@ def register(subparsers: cli.Subparsers) -> None:
             field_files=args.field_files,
             estimate=args.estimate,
             stage=args.stage,
-            workspace=args.workspace,
+            tracker=args.tracker,
             dry_run=args.dry_run,
         )
     )
@@ -180,7 +185,7 @@ def create(
     field_files: list[str] | None = None,
     estimate: str | None = None,
     stage: str | None = None,
-    workspace: Path | None = None,
+    tracker: Path | None = None,
     dry_run: bool = False,
     stdin: TextIO | None = None,
 ) -> Done | NothingToDo:
@@ -212,7 +217,7 @@ def create(
             "Use only paragraphs, headings, - and 1. lists, code blocks, `code`, **bold** and "
             "[links](url).",
         )
-    settings = config.load(workspace)
+    settings = config.load(tracker)
     space = space or settings.space
     all_labels = tuple(dict.fromkeys([*settings.labels, *(labels or [])]))
     kept_as_label = stage is not None and stage not in settings.stages

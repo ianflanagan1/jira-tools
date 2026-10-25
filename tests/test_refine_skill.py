@@ -43,7 +43,7 @@ def test_only_the_user_starts_it():
 
 
 def test_it_checks_where_issues_go_as_it_loads():
-    assert "jira workspace" in loading_commands()
+    assert "jira tracker" in loading_commands()
 
 
 @pytest.mark.parametrize("command", loading_commands())

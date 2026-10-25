@@ -3,8 +3,8 @@
 Starts work on the issue, in the git repository in the current folder:
 
 1. Assigns it to you.
-2. Moves it to the being-worked-on stage: the status .workspace.toml's [tracker.stages] keeps
-   it in, In Progress unless set, in one move, or its stage-being-worked-on label. When its
+2. Moves it to the being-worked-on stage: the status [stages] in .config/ianf-tracker.toml
+   keeps it in, In Progress unless set, in one move, or its stage-being-worked-on label. When its
    workflow has no move there from its status, it stops before changing anything and says which
    statuses it can move to; when the move needs fields filled in, it says which, to fill them in
    with jira move.

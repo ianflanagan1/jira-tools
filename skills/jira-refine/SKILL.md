@@ -2,7 +2,7 @@
 name: jira-refine
 description: Turn a Jira issue, such as a problem reported by a colleague who doesn't know the code, or one filed quickly to refine later, into one an AI agent can work from. Investigates the codebase, asks you what it can't find out, and rewrites the description, keeping the original below it as evidence, not instructions. Moves it to ready-for-agent once you've approved it.
 disable-model-invocation: true
-allowed-tools: Bash(jira workspace:*), Bash(echo "exit $?"), Bash(sh *shared/scripts/reference.sh*), Bash(jira view:*), Bash(jira edit:*), Bash(jira stage:*), Bash(grep *), Bash(ls *), Read, Grep, Glob
+allowed-tools: Bash(jira tracker:*), Bash(echo "exit $?"), Bash(sh *shared/scripts/reference.sh*), Bash(jira view:*), Bash(jira edit:*), Bash(jira stage:*), Bash(grep *), Bash(ls *), Read, Grep, Glob
 ---
 
 # Jira refine
@@ -13,17 +13,17 @@ If a `reference.sh` command below still shows instead of a reference, read that 
 
 ## Check
 
-Where this repository's issues go, from `jira workspace`, captured when this skill loaded:
+Where this repository's issues go, from `jira tracker`, captured when this skill loaded:
 
 ```
-!`jira workspace 2>&1; echo "exit $?"`
+!`jira tracker 2>&1; echo "exit $?"`
 ```
 
-If the block above still shows the command rather than its output, run `jira workspace` yourself.
+If the block above still shows the command rather than its output, run `jira tracker` yourself.
 
 - `exit 0`: go on. A line saying defaults were used is a note, not a problem.
 - `exit 127`, or `jira` not found: reply `⚠️ jira isn't installed.`, then that it's set up as jira-tools' README describes, and stop.
-- A `⚠️` line: reply with it and the lines after it, as they are, and stop. An issue is refined only from the repository it's about, whose `.workspace.toml` says where its issues go.
+- A `⚠️` line: reply with it and the lines after it, as they are, and stop. An issue is refined only from the repository it's about, whose `.config/ianf-tracker.toml` says where its issues go.
 
 ## Asking
 
@@ -78,7 +78,7 @@ EOF
 
 Then set its stage with `jira stage <key> <stage>`: `ready-for-agent` when the user approved it as ready for an agent; otherwise `needs-developer`, even for an issue that was ready before, since a description no one has approved mustn't reach an agent.
 
-Never read, store or ask for the API token, and never edit `.workspace.toml`: when `jira` stops with ⚠️ about either, pass its message on and stop.
+Never read, store or ask for the API token, and never edit `.config/ianf-tracker.toml`: when `jira` stops with ⚠️ about either, pass its message on and stop.
 
 ## Output
 

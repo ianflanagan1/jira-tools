@@ -14,7 +14,7 @@ https://me.atlassian.net/browse/WEB-9
 
 ## `jira create <summary>`
 
-Files an issue with that summary in the space, of the type and with the labels set in the repository's [`.workspace.toml`](#workspacetoml). Its description is the Markdown on stdin, followed by where it was raised: the branch, commit and repository of the current folder, linked on GitHub.
+Files an issue with that summary in the space, of the type and with the labels set in the repository's [`.config/ianf-tracker.toml`](#configianf-trackertoml). Its description is the Markdown on stdin, followed by where it was raised: the branch, commit and repository of the current folder, linked on GitHub.
 
 Nothing is filed, with ⚠️ saying why, when the summary is over 80 characters, the description has Markdown Jira would show as plain text, such as a table, a quote or a nested list, or either has what looks like a secret, such as a token, a private key or `password = …`. It names the kind of secret and its line, never its value.
 
@@ -24,7 +24,7 @@ Nothing is filed, with ⚠️ saying why, when the summary is over 80 characters
 | `--label <label>` | add a label to the set ones; repeatable |
 | `--stage <stage>` | file it at a [stage](#stages) of our process, as `jira stage` does; not at `ready-for-agent` with an Open questions section |
 | `--space <key>` | file it in this space instead |
-| `--workspace <file>` | take the settings from this file instead: another `.workspace.toml`, or a product map, whose front matter has them. How report-problem files an issue about an app from outside its repository |
+| `--tracker <file>` | take the settings from this file instead: another `ianf-tracker.toml`, or a product map, whose front matter has them. How report-problem files an issue about an app from outside its repository |
 | `--priority <name>` | give it this priority, such as `High` |
 | `--parent <key>` | file it under this issue: an epic, or for a subtask type, the issue it's part of |
 | `--assign <who>` | assign it to `me`, or to someone by their name or email, as `jira assign` takes them |
@@ -79,7 +79,7 @@ Lists the open issues assigned to you in the set space, or the one given, groupe
 Starts work on the issue, from the repository you'll work on it in:
 
 1. Assigns it to you.
-2. Moves it to the `being-worked-on` [stage](#stages): the status `.workspace.toml` keeps it in, `In Progress` unless set, in one move: the same move you could make on the board. Jira allows only the moves the space's workflow has, so where it has none from the issue's status, such as a workflow that goes Backlog, Spec, Plan, In Progress, `start` stops and says which statuses it can move to. Move it on with `jira move` and run `start` again.
+2. Moves it to the `being-worked-on` [stage](#stages): the status `.config/ianf-tracker.toml` keeps it in, `In Progress` unless set, in one move: the same move you could make on the board. Jira allows only the moves the space's workflow has, so where it has none from the issue's status, such as a workflow that goes Backlog, Spec, Plan, In Progress, `start` stops and says which statuses it can move to. Move it on with `jira move` and run `start` again.
 3. Switches to its branch: the one named by its key, `WEB-12` or `WEB-12-anything`, locally or on origin. When there's none, it creates one from the current commit, named for the key and summary: `WEB-12-scan-skips-symlinks`.
 
 It stops, changing nothing, outside a repository, or when the issue is assigned to someone else (`jira assign` it to yourself first if you're taking it over), done, or can't move to `being-worked-on` from its status, or the move needs fields filled in: make that move with `jira move` and its options, and run `start` again. Each step is skipped when it's done, so after a failure you fix the cause and run it again.
@@ -206,7 +206,7 @@ Our skills take an issue through stages, each named for what has to happen next:
 | `awaiting-review` | the work is up for review | |
 | done | nothing | any status in the workflow's done category |
 
-`[tracker.stages]` in `.workspace.toml` maps a stage to the status your workflow has for it; a stage left out is kept as a `stage-<name>` label instead, in any to-do status no stage is mapped to. So a space with a status for every stage uses no labels, and one with only To Do, In Progress and Done uses labels for the rest. A mapped status is where an issue is, whatever its labels say: people move issues on the board, and only our commands touch the labels.
+`[stages]` in `.config/ianf-tracker.toml` maps a stage to the status your workflow has for it; a stage left out is kept as a `stage-<name>` label instead, in any to-do status no stage is mapped to. So a space with a status for every stage uses no labels, and one with only To Do, In Progress and Done uses labels for the rest. A mapped status is where an issue is, whatever its labels say: people move issues on the board, and only our commands touch the labels.
 
 ## `jira stage <key> [<stage>]`
 
@@ -243,9 +243,11 @@ Install it as a plugin, from this folder or from GitHub:
 /plugin install jira-tools@jira-tools
 ```
 
-## `.workspace.toml`
+## `.config/ianf-tracker.toml`
 
-Where a repository's issues go is the team's to decide, so it's set in a file committed at the repository's root, `.workspace.toml`, in its `[tracker]` table; [`workspace.example.toml`](workspace.example.toml) shows every setting. Only your API token stays on your machine. Other tools keep their own tables in the same file, such as product-map's `[product-map]`, and `jira` ignores them.
+Where a repository's issues go is the team's to decide, so it's set in a file committed in the repository, `.config/ianf-tracker.toml`, as [repo-settings](../repo-settings) describes. jira-tools reads it as it is in the worktree you're in, so a branch can change it; [`ianf-tracker.example.toml`](ianf-tracker.example.toml) shows every setting. Only your API token stays on your machine. jira-tools owns the file, and product-map and dora-tools read it too.
+
+The file sets `version`, the version of its format, and names its schema on its first line, so an editor with a TOML language server, such as Even Better TOML in VS Code, checks it as you type. [`schema/`](schema) has the schema for each version.
 
 | Setting | |
 |---|---|
@@ -253,11 +255,14 @@ Where a repository's issues go is the team's to decide, so it's set in a file co
 | `kind` | `jira`, the default; any other tracker is refused |
 | `issue_type` | the type issues are filed as, `Task` by default |
 | `labels` | labels every issue gets, none by default |
-| `[tracker.stages]` | the status your workflow keeps each of our [stages](#stages) in; by default only `being-worked-on`, in `In Progress` |
+| `version` | needed: the version of the file's format, `1` |
+| `[stages]` | the status your workflow keeps each of our [stages](#stages) in; by default only `being-worked-on`, in `In Progress` |
 
 Every command reads it from the repository the current folder is in, and does nothing, with ⚠️ saying why, outside a repository, without the file, or without `site` or `space`: an issue is always filed from the repository it's about. A setting with a default that's left out takes it, and the command says so on stderr.
 
-`jira workspace` shows the settings it would use and where they came from. The skills run it as they load, so they stop before any work when nothing could be filed.
+`jira tracker` shows the settings it would use and where they came from. The skills run it as they load, so they stop before any work when nothing could be filed.
+
+`jira workspace` and `--workspace`, the names from before the settings moved to `.config/`, still work for now, with a warning, so a skill or plugin installed before the rename keeps working until it's updated.
 
 ## Setup
 
@@ -268,7 +273,7 @@ cd ~/projects/cli/jira-tools
 devbox run setup   # uv sync, building .venv
 ```
 
-That also links `jira` into `~/.local/bin`, and says so if that folder isn't on your PATH. Where issues go is set in each repository, in its [`.workspace.toml`](#workspacetoml), not on your machine.
+That also links `jira` into `~/.local/bin`, and says so if that folder isn't on your PATH. Where issues go is set in each repository, in its [`.config/ianf-tracker.toml`](#configianf-trackertoml), not on your machine.
 
 `jira` signs in with your Atlassian email and an API token, kept in the macOS keychain or, on Linux, the Secret Service keyring. On Windows it doesn't yet read Windows Credential Manager, so it stops with ⚠️ saying credentials aren't supported; setup also uses devbox, which runs on Windows only inside WSL. The first time it needs the token it stops and prints the command that stores it on your system, under your email. Create the token at <https://id.atlassian.com/manage-profile/security/api-tokens>. It can do whatever your account can in Jira; `jira` reads, searches, creates, edits, comments on, attaches files to, assigns, moves, links and watches issues; links them to web pages and logs time on them; removes links and watchers; and edits and deletes your own comments, but never deletes issues, attachments or anyone else's comments.
 

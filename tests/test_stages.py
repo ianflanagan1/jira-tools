@@ -1,6 +1,6 @@
 """Where an issue is in our process, and the changes that move it on: each stage kept in the
-status .workspace.toml maps it to, or, with none, as a stage-<name> label, against a fake Jira
-site."""
+status .config/ianf-tracker.toml maps it to, or, with none, as a stage-<name> label, against a
+fake Jira site."""
 
 import pytest
 from cli_kit.outcome import Precondition

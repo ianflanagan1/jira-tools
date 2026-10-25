@@ -1,10 +1,12 @@
-# A repository's .workspace.toml: settings its team shares, committed at its root. Copy this file
-# there as .workspace.toml and edit it. Only credentials stay on each person's machine.
+#:schema https://raw.githubusercontent.com/ianflanagan1/jira-tools/main/schema/ianf-tracker.v1.json
 
-# Where the repository's issues go, for jira-tools, and for product-map, which copies this table
-# into the app's product map so a colleague's report is filed in the same place. site and space are
-# needed; a setting left out takes the default shown here, and each command says so.
-[tracker]
+# Where a repository's issues go, for jira-tools, and for product-map, which copies these settings
+# into the app's product map so a colleague's report is filed in the same place. Copy this file into
+# the repository as .config/ianf-tracker.toml, edit it and commit it: its team shares it. site and
+# space are needed; a setting left out takes the default shown here, and each command says so.
+
+# The version of this file's format: schema/ in jira-tools has each version's schema.
+version = 1
 
 # The tracker. jira-tools handles only jira.
 kind = "jira"
@@ -35,5 +37,5 @@ labels = []
 #                     person approved it; a label can be added by anyone who can edit the issue.
 #   being-worked-on   work has started: where `jira start` moves an issue
 #   awaiting-review   the work is up for review
-[tracker.stages]
+[stages]
 being-worked-on = "In Progress"

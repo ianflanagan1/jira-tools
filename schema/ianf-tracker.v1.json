@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ianflanagan1/jira-tools/main/schema/ianf-tracker.v1.json",
+  "title": ".config/ianf-tracker.toml, version 1",
+  "description": "Where a repository's issues go, for jira-tools, product-map and dora-tools. jira-tools and product-map read it as it is in the worktree you're in; dora-tools reads the copy committed on the code host's default branch. See ianf-tracker.example.toml in jira-tools.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "site", "space"],
+  "properties": {
+    "version": {
+      "description": "The version of this file's format.",
+      "const": 1
+    },
+    "kind": {
+      "description": "The tracker. jira-tools handles only jira.",
+      "enum": ["jira"],
+      "default": "jira"
+    },
+    "site": {
+      "description": "The Jira Cloud site, such as your-site.atlassian.net.",
+      "type": "string",
+      "minLength": 1
+    },
+    "space": {
+      "description": "The key of the space issues are filed in: the prefix of its issue keys, as in PROJ-123.",
+      "type": "string",
+      "minLength": 1
+    },
+    "issue_type": {
+      "description": "The type issues are filed as. `jira create --type` overrides it.",
+      "type": "string",
+      "default": "Task"
+    },
+    "labels": {
+      "description": "Labels every issue gets. `jira create --label` adds more.",
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "stages": {
+      "description": "The status in your workflow each stage is kept in. A stage left out is kept as a stage-<name> label.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "needs-codebase": { "$ref": "#/$defs/status" },
+        "needs-developer": { "$ref": "#/$defs/status" },
+        "ready-for-agent": { "$ref": "#/$defs/status" },
+        "being-worked-on": { "$ref": "#/$defs/status" },
+        "awaiting-review": { "$ref": "#/$defs/status" }
+      },
+      "default": { "being-worked-on": "In Progress" }
+    }
+  },
+  "$defs": {
+    "status": {
+      "description": "A status in your Jira workflow, by its name.",
+      "type": "string",
+      "pattern": "\\S"
+    }
+  }
+}

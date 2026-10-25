@@ -16,13 +16,13 @@ from jira_tools.commands import (
     move,
     stage,
     start,
+    tracker,
     unlink,
     unwatch,
     unweblink,
     view,
     watch,
     weblink,
-    workspace,
 )
 
 COMMANDS = [
@@ -43,7 +43,7 @@ COMMANDS = [
     weblink,
     unweblink,
     stage,
-    workspace,
+    tracker,
 ]
 
 

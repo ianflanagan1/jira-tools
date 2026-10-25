@@ -31,7 +31,7 @@ class Fakes:
         self.tokens_read: list[Token] = []
         self.open_summaries: list[str] = []
         self.sent: list[tuple[str, dict]] = []
-        self.workspaces: list[Path | None] = []
+        self.trackers: list[Path | None] = []
 
     def send(self, method: str, url: str, auth: str, body: dict) -> dict:
         self.sent.append((url.removeprefix(SITE), body))
@@ -61,7 +61,7 @@ def fakes(monkeypatch: pytest.MonkeyPatch) -> Fakes:
         return Credential("me@example.com", "the-token")
 
     def load(path: Path | None = None) -> Config:
-        fakes.workspaces.append(path)
+        fakes.trackers.append(path)
         return fakes.settings
 
     monkeypatch.setattr(config, "load", load)
@@ -151,23 +151,32 @@ def test_a_blank_summary_is_refused_before_anything_is_read(fakes):
     assert fakes.tokens_read == []
 
 
-def test_its_settings_are_the_repository_s_unless_a_workspace_file_is_given(fakes, tmp_path):
+def test_its_settings_are_the_repository_s_unless_a_tracker_file_is_given(fakes, tmp_path):
     file()
-    file("Another", workspace=tmp_path / "shop.md")
-    assert fakes.workspaces == [None, tmp_path / "shop.md"]
+    file("Another", tracker=tmp_path / "shop.md")
+    assert fakes.trackers == [None, tmp_path / "shop.md"]
 
 
-def test_the_command_line_takes_a_workspace_file(fakes, monkeypatch, tmp_path):
+def test_the_command_line_takes_a_tracker_file(fakes, monkeypatch, tmp_path):
+    monkeypatch.setattr("sys.stdin", io.StringIO(""))
+    assert main(["create", "Scan skips symlinks", "--tracker", str(tmp_path / "shop.md")]) == 0
+    assert fakes.trackers == [tmp_path / "shop.md"]
+
+
+def test_the_old_workspace_option_still_takes_it_and_says_it_is_deprecated(
+    fakes, monkeypatch, tmp_path, capsys
+):
     monkeypatch.setattr("sys.stdin", io.StringIO(""))
     assert main(["create", "Scan skips symlinks", "--workspace", str(tmp_path / "shop.md")]) == 0
-    assert fakes.workspaces == [tmp_path / "shop.md"]
+    assert fakes.trackers == [tmp_path / "shop.md"]
+    assert "option '--workspace' is deprecated" in capsys.readouterr().err
 
 
 def test_a_summary_over_80_characters_is_refused_before_anything_is_read(fakes):
     with pytest.raises(Precondition) as raised:
         file("x" * 81)
     assert raised.value.message == "The summary is 81 characters; it can have at most 80."
-    assert fakes.workspaces == []
+    assert fakes.trackers == []
     assert fakes.tokens_read == []
 
 

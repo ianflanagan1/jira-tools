@@ -8,10 +8,10 @@
 
 and done, which is any status in the workflow's done category.
 
-Each stage is kept in the status .workspace.toml maps it to, or, with none, as a stage-<name> label.
-A mapped status is where the issue is, whatever its labels say, since people move issues on the
-board but only our commands touch the labels; a stage label counts only in a status no stage is
-mapped to.
+Each stage is kept in the status .config/ianf-tracker.toml maps it to, or, with none, as a
+stage-<name> label. A mapped status is where the issue is, whatever its labels say, since people
+move issues on the board but only our commands touch the labels; a stage label counts only in a
+status no stage is mapped to.
 """
 
 from dataclasses import dataclass
@@ -119,6 +119,6 @@ def _to_do(
     raise Precondition(
         f"{key} can't leave {status} for {stage}.",
         f"{stage} is kept as a label, in a to-do status no stage is mapped to, and its workflow"
-        f" has no move from {status} to one. Map {stage} to a status in .workspace.toml's"
-        " [tracker.stages].",
+        f" has no move from {status} to one. Map {stage} to a status in [stages] in"
+        " .config/ianf-tracker.toml.",
     )

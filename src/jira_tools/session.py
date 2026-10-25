@@ -1,4 +1,5 @@
-"""Signing in to the Jira site set in .workspace.toml, and reading the issue a command names."""
+"""Signing in to the Jira site set in .config/ianf-tracker.toml, and reading the issue a command
+names."""
 
 from cli_kit.credentials import Token
 from cli_kit.outcome import Precondition

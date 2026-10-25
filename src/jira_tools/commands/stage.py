@@ -8,8 +8,8 @@ Says which stage of our process the issue is at, or moves it to stage:
     being-worked-on   work has started
     awaiting-review   the work is up for review
 
-Each stage is kept in the status .workspace.toml's [tracker.stages] maps it to, or, with none, as a
-stage-<name> label; a done status is done. It won't move an issue whose description has an Open
+Each stage is kept in the status [stages] in .config/ianf-tracker.toml maps it to, or, with none,
+as a stage-<name> label; a done status is done. It won't move an issue whose description has an Open
 questions section to ready-for-agent, or a done one anywhere. An issue already at the stage is
 left alone.
 
