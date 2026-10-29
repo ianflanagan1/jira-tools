@@ -2,6 +2,7 @@
 name: jira-ticket
 description: File a Jira issue for something raised in this conversation that won't be fixed now, such as a code-review finding, linked to the branch and commit it was raised on. Refines it with you as it files, while you still have it in mind - reads the code, asks what it can't find out, and once you approve it, files it ready for an AI agent. Say "quick" to just file it and refine it later. Prints each issue's key and URL.
 disable-model-invocation: true
+model: inherit
 allowed-tools: Bash(jira tracker:*), Bash(echo "exit $?"), Bash(sh *shared/scripts/reference.sh*), Bash(jira create:*), Bash(jira attach:*), Bash(grep *), Bash(ls *), Read, Grep, Glob
 ---
 

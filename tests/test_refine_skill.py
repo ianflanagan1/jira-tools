@@ -42,6 +42,11 @@ def test_only_the_user_starts_it():
     assert frontmatter()["disable-model-invocation"] == "true"
 
 
+def test_it_runs_inline_on_the_session_model_since_it_asks_you_as_it_goes():
+    assert frontmatter()["model"] == "inherit"
+    assert "context" not in frontmatter()
+
+
 def test_it_checks_where_issues_go_as_it_loads():
     assert "jira tracker" in loading_commands()
 

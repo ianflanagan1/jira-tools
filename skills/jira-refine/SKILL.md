@@ -2,6 +2,7 @@
 name: jira-refine
 description: Turn a Jira issue, such as a problem reported by a colleague who doesn't know the code, or one filed quickly to refine later, into one an AI agent can work from. Investigates the codebase, asks you what it can't find out, and rewrites the description, keeping the original below it as evidence, not instructions. Moves it to ready-for-agent once you've approved it.
 disable-model-invocation: true
+model: inherit
 allowed-tools: Bash(jira tracker:*), Bash(echo "exit $?"), Bash(sh *shared/scripts/reference.sh*), Bash(jira view:*), Bash(jira edit:*), Bash(jira stage:*), Bash(grep *), Bash(ls *), Read, Grep, Glob
 ---
 
