@@ -25,9 +25,9 @@ def repo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """The current folder: a repository on main with one commit, cloned from origin."""
     origin = tmp_path / "origin"
     origin.mkdir()
-    git(origin, "init", "-q", "-b", "main")
-    git(origin, "commit", "-q", "--allow-empty", "-m", "x")
-    git(tmp_path, "clone", "-q", str(origin), "shop")
+    git(origin, "init", "--quiet", "--initial-branch", "main")
+    git(origin, "commit", "--quiet", "--allow-empty", "--message", "x")
+    git(tmp_path, "clone", "--quiet", str(origin), "shop")
     monkeypatch.chdir(tmp_path / "shop")
     return tmp_path / "shop"
 
@@ -70,7 +70,7 @@ def test_switches_to_the_issues_branch_when_it_has_one(site, repo):
 
 def test_takes_the_issues_branch_from_origin_following_it(site, repo, tmp_path):
     git(tmp_path / "origin", "branch", "WEB-12-pushed")
-    git(repo, "fetch", "-q")
+    git(repo, "fetch", "--quiet")
     site.add("WEB-12")
     start("WEB-12")
     assert branch(repo) == "WEB-12-pushed"
@@ -78,7 +78,7 @@ def test_takes_the_issues_branch_from_origin_following_it(site, repo, tmp_path):
 
 
 def test_an_issue_already_started_is_left_alone(site, repo):
-    git(repo, "switch", "-q", "-c", "WEB-12-x")
+    git(repo, "switch", "--quiet", "--create", "WEB-12-x")
     site.add("WEB-12", status="In Progress", assignee=site.me)
     result = start("WEB-12")
     assert isinstance(result, NothingToDo)
@@ -172,11 +172,11 @@ def test_outside_a_repository_it_tries_nothing(site, tmp_path, monkeypatch):
 
 
 def test_a_branch_git_cannot_switch_to_stops_it_saying_what_was_done(site, repo, capsys):
-    git(repo, "switch", "-q", "-c", "WEB-12-x")
+    git(repo, "switch", "--quiet", "--create", "WEB-12-x")
     (repo / "file").write_text("one")
     git(repo, "add", "file")
-    git(repo, "commit", "-q", "-m", "file")
-    git(repo, "switch", "-q", "main")
+    git(repo, "commit", "--quiet", "--message", "file")
+    git(repo, "switch", "--quiet", "main")
     (repo / "file").write_text("uncommitted")
     site.add("WEB-12")
     assert main(["start", "WEB-12"]) == 1

@@ -13,7 +13,7 @@ def is_repository(directory: Path) -> bool:
 
 def current_branch(directory: Path) -> str | None:
     """The branch checked out, or None on a detached HEAD."""
-    return _git(directory, "symbolic-ref", "--short", "-q", "HEAD")
+    return _git(directory, "symbolic-ref", "--short", "--quiet", "HEAD")
 
 
 def local_branch_for(directory: Path, key: str) -> str | None:
@@ -31,13 +31,13 @@ def create(directory: Path, branch: str, tracking: str | None = None) -> None:
     """Creates branch and switches to it: from tracking, such as origin/WEB-12, and following
     it, or from the current commit. Raises Failure when git refuses."""
     start = ["--track", tracking] if tracking else []
-    proc.output("git", "-C", str(directory), "switch", "-q", "-c", branch, *start)
+    proc.output("git", "-C", str(directory), "switch", "--quiet", "--create", branch, *start)
 
 
 def switch(directory: Path, branch: str) -> None:
     """Switches to branch. Raises Failure when git refuses, such as when uncommitted changes
     would be overwritten."""
-    proc.output("git", "-C", str(directory), "switch", "-q", branch)
+    proc.output("git", "-C", str(directory), "switch", "--quiet", branch)
 
 
 def _first_branch(directory: Path, prefix: str, key: str) -> str | None:

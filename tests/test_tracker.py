@@ -20,7 +20,7 @@ TRACKER = (
 def repo(tmp_path: Path) -> Path:
     root = tmp_path / "repo"
     root.mkdir()
-    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    subprocess.run(["git", "init", "--quiet", str(root)], check=True)
     return root
 
 

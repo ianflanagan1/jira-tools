@@ -24,7 +24,7 @@ TRACKER = 'version = 1\nkind = "jira"\nsite = "me.atlassian.net"\nspace = "WEB"\
 def repo(tmp_path: Path) -> Path:
     root = tmp_path / "repo"
     (root / "src" / "deep").mkdir(parents=True)
-    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    subprocess.run(["git", "init", "--quiet", str(root)], check=True)
     return root
 
 

@@ -22,10 +22,10 @@ def repo(tmp_path: Path) -> Path:
     """A repository on branch main, with one commit, cloned from origin."""
     origin = tmp_path / "origin"
     origin.mkdir()
-    run(origin, "init", "-q", "-b", "main")
-    run(origin, "commit", "-q", "--allow-empty", "-m", "x")
+    run(origin, "init", "--quiet", "--initial-branch", "main")
+    run(origin, "commit", "--quiet", "--allow-empty", "--message", "x")
     run(origin, "branch", "WEB-7-on-origin")
-    run(tmp_path, "clone", "-q", str(origin), "shop")
+    run(tmp_path, "clone", "--quiet", str(origin), "shop")
     return tmp_path / "shop"
 
 
@@ -43,7 +43,7 @@ def test_names_the_current_branch(repo):
 
 
 def test_a_detached_head_is_on_no_branch(repo):
-    run(repo, "switch", "-q", "--detach")
+    run(repo, "switch", "--quiet", "--detach")
     assert git.current_branch(repo) is None
 
 

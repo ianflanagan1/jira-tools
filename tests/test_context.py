@@ -20,9 +20,9 @@ def repo(tmp_path: Path) -> Path:
     """A repository called shop on branch main, with one commit."""
     path = tmp_path / "shop"
     path.mkdir()
-    git(path, "init", "-q", "-b", "main")
+    git(path, "init", "--quiet", "--initial-branch", "main")
     who = ["-c", "user.name=t", "-c", "user.email=t@t"]
-    git(path, *who, "commit", "-q", "--allow-empty", "-m", "x")
+    git(path, *who, "commit", "--quiet", "--allow-empty", "--message", "x")
     return path
 
 
@@ -31,7 +31,7 @@ def test_outside_a_repository_there_is_nothing_to_say(tmp_path):
 
 
 def test_a_repository_without_commits_has_nothing_to_say(tmp_path):
-    git(tmp_path, "init", "-q")
+    git(tmp_path, "init", "--quiet")
     assert where(tmp_path) is None
 
 
@@ -60,7 +60,7 @@ def test_without_an_origin_it_names_the_folder(repo):
 
 
 def test_a_detached_head_names_no_branch(repo):
-    git(repo, "checkout", "-q", "--detach")
+    git(repo, "checkout", "--quiet", "--detach")
     commit = git(repo, "rev-parse", "--short=7", "HEAD")
     assert where(repo) == f"Raised at `{commit}` in `shop`."
 

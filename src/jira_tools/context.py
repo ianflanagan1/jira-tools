@@ -14,7 +14,7 @@ def where(directory: Path) -> str | None:
     commit = _git(directory, "rev-parse", "HEAD")
     if commit is None:
         return None
-    branch = _git(directory, "symbolic-ref", "--short", "-q", "HEAD")
+    branch = _git(directory, "symbolic-ref", "--short", "--quiet", "HEAD")
     origin = _git(directory, "remote", "get-url", "origin")
     top = _git(directory, "rev-parse", "--show-toplevel")
 
