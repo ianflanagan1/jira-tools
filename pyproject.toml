@@ -9,8 +9,8 @@ dependencies = ["cli-kit", "repo-settings"]
 jira = "jira_tools.__main__:main"
 
 [tool.uv.sources]
-cli-kit = { git = "https://github.com/ianflanagan1/cli-kit", tag = "v0.1.0" }
-repo-settings = { git = "https://github.com/ianflanagan1/repo-settings", tag = "v0.1.0" }
+cli-kit = { git = "https://github.com/ianflanagan1/cli-kit", branch = "main" }
+repo-settings = { git = "https://github.com/ianflanagan1/repo-settings", branch = "main" }
 
 [dependency-groups]
 dev = [
