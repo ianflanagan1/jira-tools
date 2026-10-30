@@ -270,7 +270,7 @@ Once per machine:
 
 ```sh
 cd ~/projects/cli/jira-tools
-devbox run setup   # uv sync, building .venv
+devbox run -- task setup   # uv sync, building .venv
 ```
 
 That also links `jira` into `~/.local/bin`, and says so if that folder isn't on your PATH. Where issues go is set in each repository, in its [`.config/ianf-tracker.toml`](#configianf-trackertoml), not on your machine.
@@ -282,6 +282,6 @@ For a Jira to try it on, Atlassian's Free plan gives you a site at `<name>.atlas
 ## Development
 
 ```sh
-devbox run test    # pytest
-devbox run lint    # ruff check and format
+devbox run -- task test    # pytest
+devbox run -- task lint    # ruff check and format
 ```

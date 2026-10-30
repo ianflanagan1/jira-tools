@@ -42,7 +42,7 @@ What the fix must keep to, and what's out of scope.
 ## Done when
 
 - What will be true once it's fixed, each as a behaviour a test could state.
-- The command that runs the tests: `devbox run test`.
+- The command that runs the tests: `devbox run -- task test`.
 
 ## Open questions
 
