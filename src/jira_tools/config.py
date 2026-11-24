@@ -23,8 +23,7 @@ from repo_settings import Invalid, Missing, Settings, Source, Unlocatable
 
 from jira_tools.stages import STAGES
 
-PURPOSE = "tracker"
-FILE = repo_settings.location(PURPOSE)
+FILE = ".config/ianf-tracker.toml"
 EXAMPLE = "See ianf-tracker.example.toml in jira-tools."
 REBUILD = "A product map copies its app's tracker settings: build and publish it again."
 SETTINGS = ("kind", "site", "space", "issue_type", "labels", "stages")
@@ -88,7 +87,7 @@ def located(path: Path | None, cwd: Path) -> tuple[Config, str]:
 def _in_repository(folder: Path) -> Settings[Version]:
     """The settings in the worktree folder is in, as it is on disk. Raises Precondition outside
     a repository, or when it has none."""
-    read = repo_settings.read(Source.LOCAL_THIS_WORKTREE, folder, PURPOSE, Version)
+    read = repo_settings.read(Source.LOCAL_THIS_WORKTREE, folder, FILE, Version)
     match read:
         case Settings():
             return read
