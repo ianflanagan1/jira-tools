@@ -284,4 +284,5 @@ For a Jira to try it on, Atlassian's Free plan gives you a site at `<name>.atlas
 ```sh
 devbox run -- task test    # pytest
 devbox run -- task lint    # ruff check and format
+devbox run -- task check   # lint, then test, failing on any problem
 ```
